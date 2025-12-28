@@ -28,6 +28,9 @@ mongoose.connect(MONGODB_URI)
 app.use('/api/gallery', require('./routes/gallery'));
 app.use('/api/blog', require('./routes/blog'));
 
+// Serve static files from frontend
+app.use(express.static(path.join(__dirname, '../myself')));
+
 // Health check endpoint
 app.get("/favicon.ico", (req, res) => res.status(204));
 
@@ -35,7 +38,23 @@ app.get('/api/health', (req, res) => {
   res.json({ message: 'Server is running', status: 'OK' });
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+// Root route - serve index.html for SPA
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../myself/index.html'));
 });
+
+// Catch-all for SPA routing
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../myself/index.html'));
+});
+
+// Start server (only listen if not in serverless environment)
+if (process.env.NODE_ENV !== 'vercel') {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+  });
+}
+
+// Export for serverless
+module.exports = app;
