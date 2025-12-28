@@ -1,6 +1,6 @@
 // Configuration
-const API_URL = 'http://localhost:5000/api';
-const API_BASE = 'http://localhost:5000';
+const API_URL = 'https://ritik-lahari-y921.vercel.app/api';
+const API_BASE = 'https://ritik-lahari-y921.vercel.app/';
 
 // Carousel scroll function
 function scrollCarousel(type, direction) {
