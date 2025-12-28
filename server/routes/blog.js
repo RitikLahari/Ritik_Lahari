@@ -5,23 +5,8 @@ const path = require('path');
 const fs = require('fs');
 const Blog = require('../models/Blog');
 
-// Setup upload directory - determine best path for environment
-// Always default to /tmp for production (serverless)
-let uploadDir = '/tmp/uploads/blog';
-
-// Use local folder only in development
-if (process.env.NODE_ENV !== 'production') {
-  uploadDir = path.join(__dirname, '../uploads/blog');
-}
-
-// Safely create directory
-try {
-  if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
-  }
-} catch (err) {
-  console.warn('Blog upload dir not created (serverless)');
-}
+// Use /tmp for temporary storage only - no persistent local storage
+const uploadDir = '/tmp/uploads/blog';
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
