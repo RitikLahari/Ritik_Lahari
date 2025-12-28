@@ -29,6 +29,8 @@ app.use('/api/gallery', require('./routes/gallery'));
 app.use('/api/blog', require('./routes/blog'));
 
 // Health check endpoint
+app.get("/favicon.ico", (req, res) => res.status(204));
+
 app.get('/api/health', (req, res) => {
   res.json({ message: 'Server is running', status: 'OK' });
 });
