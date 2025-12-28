@@ -12,11 +12,17 @@ try {
     fs.mkdirSync(uploadDir, { recursive: true });
   }
 } catch (err) {
-  // Fallback to /tmp for serverless environments (AWS Lambda, etc.)
+  // Fallback to /tmp for serverless environments (AWS Lambda, Vercel, etc.)
   console.warn('Cannot create upload directory at ' + uploadDir + ', using /tmp instead:', err.message);
-  uploadDir = path.join('/tmp', 'uploads/gallery');
-  if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
+  uploadDir = '/tmp/gallery-uploads';
+  try {
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+  } catch (tmpErr) {
+    // If /tmp also fails, just use a non-persistent path
+    console.warn('Cannot create /tmp directory either, uploads will not be persisted:', tmpErr.message);
+    uploadDir = '/tmp/gallery-uploads';
   }
 }
 
