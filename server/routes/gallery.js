@@ -6,31 +6,12 @@ const fs = require('fs');
 const Gallery = require('../models/Gallery');
 
 // Setup upload directory - determine best path for environment
-let uploadDir = '/tmp/gallery-uploads';
-const localUploadDir = path.join(__dirname, '../uploads/gallery');
+// Always default to /tmp for production/serverless
+let uploadDir = '/tmp/uploads/gallery';
 
-// Try to use local directory if possible, otherwise use /tmp
-if (process.env.NODE_ENV !== 'production') {
-  // Development: try to create local directory
-  try {
-    if (!fs.existsSync(localUploadDir)) {
-      fs.mkdirSync(localUploadDir, { recursive: true });
-    }
-    uploadDir = localUploadDir;
-  } catch (err) {
-    // Silently fall back to /tmp
-    console.log('Using /tmp for uploads (local directory creation failed)');
-  }
-} else {
-  // Production (Vercel): always use /tmp, create if possible
-  try {
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
-    }
-  } catch (err) {
-    // If /tmp also fails, that's ok - multer will handle the error gracefully
-    console.log('Upload directory not available, multer will handle upload failures gracefully');
-  }
+// Only try local directory in development
+if (process.env.NODE_ENV !== 'production' && process.env.NODE_ENV !== 'vercel') {
+  uploadDir = path.join(__dirname, '../uploads/gallery');
 }
 
 // Configure multer for file uploads
