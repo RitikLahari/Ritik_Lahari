@@ -53,7 +53,7 @@ function displayGallery(images) {
         <span class="category-badge">${image.category}</span>
         <div class="gallery-actions">
           <button class="btn btn-sm btn-color-2" onclick="editGalleryImage('${image._id}')">Edit</button>
-          <button class="btn btn-sm btn-color-1" onclick="deleteGalleryImage('${image._id}')">Delete</button>
+         <!-- <button class="btn btn-sm btn-color-1" onclick="deleteGalleryImage('${image._id}')">Delete</button> -->
         </div>
       </div>
     </div>
@@ -154,7 +154,7 @@ function displayBlog(posts) {
         ${post.tags.length > 0 ? `<div class="blog-tags">${post.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div>` : ''}
         <div class="blog-actions">
           <button class="btn btn-sm btn-color-2" onclick="viewBlogPost('${post._id}')">Read More</button>
-          <button class="btn btn-sm btn-color-1" onclick="deleteBlogPost('${post._id}')">Delete</button>
+      <!--    <button class="btn btn-sm btn-color-1" onclick="deleteBlogPost('${post._id}')">Delete</button> -->
         </div>
       </div>
     </div>

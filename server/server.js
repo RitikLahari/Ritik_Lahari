@@ -7,7 +7,7 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
+// Middleware 
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -22,7 +22,7 @@ mongoose.connect(MONGODB_URI)
   })
   .catch((error) => {
     console.log('MongoDB connection error:', error);
-  });
+  }); 
 
 // Routes
 app.use('/api/gallery', require('./routes/gallery'));
