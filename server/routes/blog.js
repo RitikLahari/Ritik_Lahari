@@ -5,24 +5,31 @@ const path = require('path');
 const fs = require('fs');
 const Blog = require('../models/Blog');
 
-// Ensure upload directories exist
-let uploadDir = path.join(__dirname, '../uploads/blog');
-try {
-  if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
+// Setup upload directory - determine best path for environment
+let uploadDir = '/tmp/blog-uploads';
+const localUploadDir = path.join(__dirname, '../uploads/blog');
+
+// Try to use local directory if possible, otherwise use /tmp
+if (process.env.NODE_ENV !== 'production') {
+  // Development: try to create local directory
+  try {
+    if (!fs.existsSync(localUploadDir)) {
+      fs.mkdirSync(localUploadDir, { recursive: true });
+    }
+    uploadDir = localUploadDir;
+  } catch (err) {
+    // Silently fall back to /tmp
+    console.log('Using /tmp for uploads (local directory creation failed)');
   }
-} catch (err) {
-  // Fallback to /tmp for serverless environments (AWS Lambda, Vercel, etc.)
-  console.warn('Cannot create upload directory at ' + uploadDir + ', using /tmp instead:', err.message);
-  uploadDir = '/tmp/blog-uploads';
+} else {
+  // Production (Vercel): always use /tmp, create if possible
   try {
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }
-  } catch (tmpErr) {
-    // If /tmp also fails, just use a non-persistent path
-    console.warn('Cannot create /tmp directory either, uploads will not be persisted:', tmpErr.message);
-    uploadDir = '/tmp/blog-uploads';
+  } catch (err) {
+    // If /tmp also fails, that's ok - multer will handle the error gracefully
+    console.log('Upload directory not available, multer will handle upload failures gracefully');
   }
 }
 
