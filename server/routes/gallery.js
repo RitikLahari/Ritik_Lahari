@@ -6,9 +6,18 @@ const fs = require('fs');
 const Gallery = require('../models/Gallery');
 
 // Ensure upload directories exist
-const uploadDir = path.join(__dirname, '../uploads/gallery');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+let uploadDir = path.join(__dirname, '../uploads/gallery');
+try {
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+} catch (err) {
+  // Fallback to /tmp for serverless environments (AWS Lambda, etc.)
+  console.warn('Cannot create upload directory at ' + uploadDir + ', using /tmp instead:', err.message);
+  uploadDir = path.join('/tmp', 'uploads/gallery');
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
 }
 
 // Configure multer for file uploads
